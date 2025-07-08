@@ -149,6 +149,8 @@ func (p *parser) BasicParser(urlOrRef string, baseUrl *Url, url *Url, stateOverr
 		base = baseUrl.Clone()
 	}
 
+	tr := ASCIIAlphanumeric.Clone().Set(0x2b).Set(0x2d).Set(0x2e)
+
 	for {
 		r := input.nextCodePoint()
 
@@ -166,7 +168,6 @@ func (p *parser) BasicParser(urlOrRef string, baseUrl *Url, url *Url, stateOverr
 				}
 			}
 		case StateScheme:
-			tr := ASCIIAlphanumeric.Clone().Set(0x2b).Set(0x2d).Set(0x2e)
 			if tr.Test(uint(r)) {
 				buffer.WriteRune(unicode.ToLower(r))
 			} else if r == ':' {
