@@ -191,11 +191,6 @@ func (s *SearchParams) Clone() *SearchParams {
 		url:    s.url,
 		params: make([]*NameValuePair, len(s.params)),
 	}
-	for i, nvp := range s.params {
-		sp.params[i] = &NameValuePair{
-			Name:  nvp.Name,
-			Value: nvp.Value,
-		}
-	}
+	copy(sp.params, s.params)
 	return sp
 }
