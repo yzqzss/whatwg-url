@@ -66,13 +66,20 @@ func (p *parser) parseHost(u *Url, parser *parser, input string, isNotSpecial bo
 		}
 	}
 
-	asciiDomain, err := p.ToASCII(domain, false)
-	if err != nil {
-		if p.opts.laxHostParsing {
-			return domain, nil
-		}
-		if err := p.handleWrappedError(u, errors.DomainToASCII, true, err); err != nil {
-			return "", err
+	var asciiDomain string
+	// fast path for common ASCIIAlpha+single_dot+somgle_dash domain
+	if containsOnly(domain, ASCIIAlpha.Clone().Set('.').Set('-')) && !strings.Contains(domain, "..") && !strings.Contains(domain, "--") {
+		asciiDomain = strings.ToLower(domain)
+	} else {
+		var err error
+		asciiDomain, err = p.ToASCII(domain, false)
+		if err != nil {
+			if p.opts.laxHostParsing {
+				return domain, nil
+			}
+			if err := p.handleWrappedError(u, errors.DomainToASCII, true, err); err != nil {
+				return "", err
+			}
 		}
 	}
 	for _, c := range asciiDomain {
