@@ -522,6 +522,7 @@ func (p *parser) stringToUnicode(src string) (string, error) {
 
 func percentEncodeString(s string, tr *PercentEncodeSet) string {
 	sb := strings.Builder{}
+	sb.Grow(len(s) * 3) // worst case: every rune is percent-encoded
 	for _, b := range []byte(s) {
 		sb.WriteString(percentEncodeByte(b, tr))
 	}
