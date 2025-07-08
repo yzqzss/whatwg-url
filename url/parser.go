@@ -806,8 +806,10 @@ func isSingleDotPathSegment(s string) bool {
 	if s == "." {
 		return true
 	}
-	s = strings.ToLower(s)
-	return s == "%2e"
+	if len(s) != 3 {
+		return false
+	}
+	return s == "%2e" || s == "%2E"
 }
 
 func isDoubleDotPathSegment(s string) bool {
