@@ -913,7 +913,7 @@ func (u *Url) isSpecialScheme(s string) bool {
 }
 
 func (u *Url) getSpecialScheme(s string) (string, bool) {
-	dp, ok := u.parser.opts.specialSchemes[s]
+	dp, ok := u.parser.opts.specialSchemes(s)
 	return dp, ok
 }
 
