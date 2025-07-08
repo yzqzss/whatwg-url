@@ -915,8 +915,7 @@ func (u *Url) getSpecialScheme(s string) (string, bool) {
 }
 
 func (u *Url) isSpecialSchemeAndBackslash(r rune) bool {
-	ok := u.IsSpecialScheme()
-	return ok && r == '\\'
+	return r == '\\' && u.IsSpecialScheme()
 }
 
 func (u *Url) cleanDefaultPort() {
