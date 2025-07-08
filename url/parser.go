@@ -747,6 +747,7 @@ func (p *parser) percentEncodeRune(r rune, tr *PercentEncodeSet) string {
 
 func (p *parser) PercentEncodeString(s string, tr *PercentEncodeSet) string {
 	buffer := &strings.Builder{}
+	buffer.Grow(len(s) * 3) // worst case: every rune is percent-encoded
 	runes := []rune(s)
 	for i, r := range runes {
 		if r == '%' {
@@ -765,6 +766,7 @@ func (p *parser) PercentEncodeString(s string, tr *PercentEncodeSet) string {
 
 func (p *parser) DecodePercentEncoded(s string) string {
 	sb := strings.Builder{}
+	sb.Grow(len(s)) // worst case: no percent-encoding, so same length
 	bytes := []byte(s)
 	for i := 0; i < len(bytes); i++ {
 		if bytes[i] != '%' {
@@ -880,7 +882,7 @@ func remove(s string, tr *bitset.BitSet) (string, bool) {
 		return s, false
 	}
 	changed := false
-	var r []byte
+	r := make([]byte, 0, len(s))
 	for _, c := range []byte(s) {
 		if tr.Test(uint(c)) {
 			changed = true
