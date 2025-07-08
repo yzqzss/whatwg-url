@@ -117,6 +117,16 @@ func (p *parser) endsInANumber(u *Url, input string) bool {
 	if last != "" && containsOnly(last, ASCIIDigit) {
 		return true
 	}
+
+	// fast path for common non-hex input
+	if last != "" {
+		tr := ASCIIHexDigit.Clone().Set('x').Set('X')
+		if !containsOnly(last, tr) {
+			return false
+		}
+	}
+
+	// slow path
 	if _, _, err := p.parseIPv4Number(u, last); err == nil || goerrors.Is(err, strconv.ErrRange) {
 		return true
 	}
