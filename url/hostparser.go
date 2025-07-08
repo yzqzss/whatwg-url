@@ -50,7 +50,12 @@ func (p *parser) parseHost(u *Url, parser *parser, input string, isNotSpecial bo
 		return p.parseOpaqueHost(u, input)
 	}
 
-	domain := p.DecodePercentEncoded(input)
+	var domain string
+	if strings.IndexByte(input, '%') < 0 { // fast path for non '%' input
+		domain = input
+	} else {
+		domain = p.DecodePercentEncoded(input)
+	}
 
 	if !utf8.ValidString(domain) {
 		if p.opts.laxHostParsing {
